@@ -14,7 +14,7 @@ The project solution is broken down as follows:
 
 **/HouseControl.Sunset/** is the code to be built. This code gets data from a service and transforms it into an appropriate date/time value.  
 **/HouseControl.Sunset.Tests/** is the set of unit tests used to build the project above.  
-**/SolarCalculator.Service/** is the service that provides the raw data.
+**/SolarCalculator.Service/** is the service that provides the raw data.  
 **/SunsetTestApp/** is a console application that can be used to run the final code.
 
 The tests are used to build the "SolarServiceSunsetProvider" class that implements the "ISunsetProvider" interface.
