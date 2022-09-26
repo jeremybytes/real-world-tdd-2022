@@ -1,0 +1,15 @@
+OK
+http://localhost:8973/SolarCalculator?lat=39.1081&lng=-84.5098&date=2022-10-20
+
+http://localhost:8973/SolarCalculator/39.1081/-84.5098/2022-10-20
+
+ERROR
+http://localhost:8973/SolarCalculator?lat=39.1081&lng=-600.0959&date=2022-10-20
+
+Hard Rock Casino Cincinnati
+39.1081,-84.5098
+
+Cincinnati
+39.1363,-84.6104
+
+http://localhost:8973/SolarCalculator?lat=39.1363&lng=-84.6104&date=2022-10-20
