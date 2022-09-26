@@ -8,7 +8,7 @@ To build and run the code, you will need to have .NET 6 installed on your machin
 
 There are 2 copies of the sample code:  
 * **/Starter/** folder has the initial state of the application.  
-* **/Completed?** folder has the final state with the unit tests and functionality in place.
+* **/Completed/** folder has the final state with the unit tests and functionality in place.
 
 The project solution is broken down as follows:  
 
