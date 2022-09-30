@@ -4,11 +4,11 @@ namespace HouseControl.Sunset.Tests;
 
 public class Tests
 {
-    string goodResult = "{\"results\":{\"sunrise\":\"4:52:36 AM\",\"sunset\":\"3:53:04 PM\",\"solar_noon\":\"10:22:50 AM\",\"day_length\":\"11:00:28.2563158\"},\"status\":\"OK\"}";
-    string badResult = "{\"results\":null,\"status\":\"ERROR\"}";
+    private string goodData = "{\"results\":{\"sunrise\":\"4:52:36 AM\",\"sunset\":\"3:53:04 PM\",\"solar_noon\":\"10:22:50 AM\",\"day_length\":\"11:00:28.2563158\"},\"status\":\"OK\"}";
+    private string badData = "{\"results\":null,\"status\":\"ERROR\"}";
 
     [Test]
-    public void SolarServiceProvider_ImplementsProviderInterface()
+    public void SunsetProvider_ImplementInterface()
     {
         var provider = new SolarServiceSunsetProvider();
         Assert.IsInstanceOf<ISunsetProvider>(provider);
@@ -20,21 +20,75 @@ public class Tests
         // Arrange
         var provider = new SolarServiceSunsetProvider();
         string timeString = "3:53:04 PM";
-        DateOnly targetDate = new DateOnly(2022, 10, 22);
-        DateTimeOffset expected = new DateTime(2022, 10, 22, 15, 53, 04);
+        DateOnly date = new DateOnly(2022, 10, 20);
+        DateTimeOffset expected = new DateTime(2022, 10, 20, 15, 53, 04);
 
         // Act
-        DateTimeOffset result = provider.ToLocalTime(targetDate, timeString);
+        DateTimeOffset result = provider.ToLocalTime(date, timeString);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
     }
 
     [Test]
+    public void ParseSunriseTime_OnValidData_ReturnsExpectedTimeString()
+    {
+        var provider = new SolarServiceSunsetProvider();
+        string expected = "4:52:36 AM";
+
+        string result = provider.ParseSunriseTime(goodData);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void ParseSunriseTime_OnErrorData_ThrowsArgumentException()
+    {
+        var provider = new SolarServiceSunsetProvider();
+
+        try
+        {
+            provider.ParseSunriseTime(badData);
+            Assert.Fail("ArgumentException not thrown");
+        }
+        catch (ArgumentException)
+        {
+            Assert.Pass();
+        }
+    }
+
+    [Test]
+    public void ParseSunsetTime_OnValidData_ReturnsExpectedTimeString()
+    {
+        var provider = new SolarServiceSunsetProvider();
+        string expected = "3:53:04 PM";
+
+        string result = provider.ParseSunsetTime(goodData);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void ParseSunsetTime_OnErrorData_ThrowsArgumentException()
+    {
+        var provider = new SolarServiceSunsetProvider();
+
+        try
+        {
+            provider.ParseSunsetTime(badData);
+            Assert.Fail("ArgumentException not thrown");
+        }
+        catch (ArgumentException)
+        {
+            Assert.Pass();
+        }
+    }
+
+    [Test]
     public void CheckStatus_OnValidStatus_ReturnsTrue()
     {
         var provider = new SolarServiceSunsetProvider();
-        bool result = provider.CheckStatus(goodResult);
+        bool result = provider.CheckStatus(goodData);
         Assert.IsTrue(result);
     }
 
@@ -42,102 +96,43 @@ public class Tests
     public void CheckStatus_OnErrorStatus_ReturnsFalse()
     {
         var provider = new SolarServiceSunsetProvider();
-        bool result = provider.CheckStatus(badResult);
+        bool result = provider.CheckStatus(badData);
         Assert.IsFalse(result);
     }
 
     [Test]
-    public void ParseSunsetString_OnValidData_ReturnsExpectedValue()
+    public async Task GetSunset_OnValidDate_ReturnsExpectedDateTime()
     {
-        var provider = new SolarServiceSunsetProvider();
-        string expected = "3:53:04 PM";
-        string result = provider.ParseSunsetString(goodResult);
-        Assert.That(result, Is.EqualTo(expected));
-    }
-
-    [Test]
-    public void ParseSunsetString_OnErrorData_ThrowsArgumentException()
-    {
-        var provider = new SolarServiceSunsetProvider();
-        try
-        {
-            provider.ParseSunsetString(badResult);
-            Assert.Fail("ArgumentException not thrown");
-        }
-        catch (ArgumentException)
-        {
-            Assert.Pass();
-        }
-        catch (Exception ex)
-        {
-            Assert.Fail($"Exception other than ArgumentException thrown: {ex.GetType()}");
-        }
-    }
-
-    [Test]
-    public void ParseSunriseString_OnValidData_ReturnsExpectedValue()
-    {
-        var provider = new SolarServiceSunsetProvider();
-        string expected = "4:52:36 AM";
-        string result = provider.ParseSunriseString(goodResult);
-        Assert.That(result, Is.EqualTo(expected));
-    }
-
-    [Test]
-    public void ParseSunriseString_OnErrorData_ThrowsArgumentException()
-    {
-        var provider = new SolarServiceSunsetProvider();
-        try
-        {
-            provider.ParseSunriseString(badResult);
-            Assert.Fail("ArgumentException not thrown");
-        }
-        catch (ArgumentException)
-        {
-            Assert.Pass();
-        }
-        catch (Exception ex)
-        {
-            Assert.Fail($"Exception other than ArgumentException thrown: {ex.GetType()}");
-        }
-    }
-
-    [Test]
-    public async Task GetSunset_OnValidDate_ReturnsExpectedTime()
-    {
-        Mock<ISolarService> serviceMock = new Mock<ISolarService>();
+        Mock<ISolarService> serviceMock = new();
         serviceMock.Setup(s => s.GetServiceData(It.IsAny<DateOnly>()))
-            .Returns(Task.FromResult(goodResult));
+            .Returns(Task.FromResult(goodData));
 
         var provider = new SolarServiceSunsetProvider();
         provider.Service = serviceMock.Object;
 
-        DateOnly targetDate = new DateOnly(2022, 10, 22);
-        DateTimeOffset expected = new DateTime(2022, 10, 22, 15, 53, 04);
+        DateOnly date = new DateOnly(2022, 10, 20);
+        DateTimeOffset expected = new DateTime(2022, 10, 20, 15, 53, 04);
 
-        DateTimeOffset result = await provider.GetSunset(targetDate);
+        DateTimeOffset result = await provider.GetSunset(date);
 
         Assert.That(result, Is.EqualTo(expected));
-
     }
 
     [Test]
-    public async Task GetSunrise_OnValidDate_ReturnsExpectedTime()
+    public async Task GetSunrise_OnValidDate_ReturnsExpectedDateTime()
     {
-        Mock<ISolarService> serviceMock = new Mock<ISolarService>();
+        Mock<ISolarService> serviceMock = new();
         serviceMock.Setup(s => s.GetServiceData(It.IsAny<DateOnly>()))
-            .Returns(Task.FromResult(goodResult));
+            .Returns(Task.FromResult(goodData));
 
         var provider = new SolarServiceSunsetProvider();
         provider.Service = serviceMock.Object;
 
-        DateOnly targetDate = new DateOnly(2022, 10, 22);
-        DateTimeOffset expected = new DateTime(2022, 10, 22, 04, 52, 36);
+        DateOnly date = new DateOnly(2022, 10, 20);
+        DateTimeOffset expected = new DateTime(2022, 10, 20, 04, 52, 36);
 
-        DateTimeOffset result = await provider.GetSunrise(targetDate);
+        DateTimeOffset result = await provider.GetSunrise(date);
 
         Assert.That(result, Is.EqualTo(expected));
-
     }
-
 }

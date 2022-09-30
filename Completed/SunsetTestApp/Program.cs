@@ -6,6 +6,9 @@ public class Program
 {
     public static async Task Main()
     {
+        //Console.WriteLine("This doesn't do anything yet");
+        //await Task.Delay(1);
+
         ISunsetProvider provider = new SolarServiceSunsetProvider();
         var today = DateOnly.FromDateTime(DateTime.Today);
         var sunrise = await provider.GetSunrise(today);
