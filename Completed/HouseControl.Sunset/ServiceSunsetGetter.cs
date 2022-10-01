@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace HouseControl.Sunset;
 
-public class SolarServiceSunsetProvider : ISunsetProvider
+public class ServiceSunsetGetter : ISunsetGetter
 {
     private ISolarService? service;
 
@@ -13,18 +13,19 @@ public class SolarServiceSunsetProvider : ISunsetProvider
         set => service = value;
     }
 
+
     public async Task<DateTimeOffset> GetSunrise(DateOnly date)
     {
-        string data = await Service.GetServiceData(date);
-        string sunriseTimeString = ParseSunriseTime(data);
+        string jsonData = await Service.GetServiceData(date);
+        string sunriseTimeString = ParseSunriseTime(jsonData);
         DateTimeOffset result = ToLocalTime(date, sunriseTimeString);
         return result;
     }
 
     public async Task<DateTimeOffset> GetSunset(DateOnly date)
     {
-        string data = await Service.GetServiceData(date);
-        string sunsetTimeString = ParseSunsetTime(data);
+        string jsonData = await Service.GetServiceData(date);
+        string sunsetTimeString = ParseSunsetTime(jsonData);
         DateTimeOffset result = ToLocalTime(date, sunsetTimeString);
         return result;
     }
@@ -58,6 +59,5 @@ public class SolarServiceSunsetProvider : ISunsetProvider
 
         dynamic? data = JsonConvert.DeserializeObject(jsonData);
         return data!.results.sunrise;
-
     }
 }

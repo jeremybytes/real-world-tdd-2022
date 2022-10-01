@@ -1,6 +1,6 @@
 ﻿namespace HouseControl.Sunset;
 
-public interface ISunsetProvider
+public interface ISunsetGetter
 {
     Task<DateTimeOffset> GetSunset(DateOnly date);
     Task<DateTimeOffset> GetSunrise(DateOnly date);
