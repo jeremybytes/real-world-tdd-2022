@@ -4,7 +4,7 @@ namespace HouseControl.Sunset.Tests;
 
 public class Tests
 {
-    string goodData = "{\"results\":{\"sunrise\":\"4:52:36 AM\",\"sunset\":\"3:53:04 PM\",\"solar_noon\":\"10:22:50 AM\",\"day_length\":\"11:00:28.2563158\"},\"status\":\"OK\"}";
+    string goodData = "{\"results\":{\"sunrise\":\"7:52:28 AM\",\"sunset\":\"6:53:14 PM\",\"solar_noon\":\"1:22:51 PM\",\"day_length\":\"11:00:46.4065871\"},\"status\":\"OK\"}";
     string badData = "{\"results\":null,\"status\":\"ERROR\"}";
 
     [Test]
@@ -19,9 +19,9 @@ public class Tests
     {
         // Arrange
         var getter = new ServiceSunsetGetter();
-        string timeString = "3:53:04 PM";
+        string timeString = "6:53:14 PM";
         DateOnly date = new DateOnly(2022, 10, 20);
-        DateTimeOffset expected = new DateTime(2022, 10, 20, 15, 53, 04);
+        DateTimeOffset expected = new DateTime(2022, 10, 20, 18, 53, 14);
 
         // Act
         DateTimeOffset result = getter.ToLocalTime(date, timeString);
@@ -34,7 +34,7 @@ public class Tests
     public void ParseSunsetTime_OnValidData_ReturnsExpectedTimeString()
     {
         var getter = new ServiceSunsetGetter();
-        string expected = "3:53:04 PM";
+        string expected = "6:53:14 PM";
 
         string result = getter.ParseSunsetTime(goodData);
 
@@ -88,7 +88,7 @@ public class Tests
         getter.Service = serviceMock.Object;
 
         DateOnly date = new DateOnly(2022, 10, 20);
-        DateTimeOffset expected = new DateTime(2022, 10, 20, 15, 53, 04);
+        DateTimeOffset expected = new DateTime(2022, 10, 20, 18, 53, 14);
 
         DateTimeOffset result = await getter.GetSunset(date);
 
@@ -99,7 +99,7 @@ public class Tests
     public void ParseSunriseTime_OnValidData_ReturnsExpectedTimeString()
     {
         var getter = new ServiceSunsetGetter();
-        string expected = "4:52:36 AM";
+        string expected = "7:52:28 AM";
 
         string result = getter.ParseSunriseTime(goodData);
 
@@ -137,7 +137,7 @@ public class Tests
         getter.Service = serviceMock.Object;
 
         DateOnly date = new DateOnly(2022, 10, 20);
-        DateTimeOffset expected = new DateTime(2022, 10, 20, 04, 52, 36);
+        DateTimeOffset expected = new DateTime(2022, 10, 20, 07, 52, 28);
 
         DateTimeOffset result = await getter.GetSunrise(date);
 

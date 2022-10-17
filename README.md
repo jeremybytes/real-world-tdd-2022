@@ -42,10 +42,10 @@ This provides the sunrise, sunset, and other values used by the application code
 ```json
 {
     "results": {
-        "sunrise": "4:52:36 AM",
-        "sunset": "3:53:04 PM",
-        "solar_noon": "10:22:50 AM",
-        "day_length": "11:00:28.2563158"
+        "sunrise": "7:52:28 AM",
+        "sunset": "6:53:14 PM",
+        "solar_noon": "1:22:51 PM",
+        "day_length": "11:00:46.4065871"
     },
     "status": "OK"
 }
